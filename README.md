@@ -14,6 +14,8 @@ We will then create visualizations for various questions one can ask about music
 - Looking at playlists over time, did some characteristics change? For instance, can we spot trends in music styles?
 - Some radios claim to play "nostalgic" music; what do they mean by that? Do they play from a moving window over the past, or is it always the same "old" songs?
 - Can we find interesting trends by correlating this information with other websites, such as how many songs, albums or singers have an entry on Wikipedia?
+- Some radio have emission where they claim to be avant-garde, but do we see these songs in the main playlist a few month after?
+- Also, in specific emission, is the evolution similar to the main playlist or is it slower/faster?
 
 ## Data description
 
@@ -21,11 +23,10 @@ Depending on what the radios provide, we may have more or less information about
 
 Ideally, we'd like to have:
 - Song name
-- Release date (at least the year)
+- Release information (name, date, type, ...)
+- Artist data (name, creation date, usual type of music, famous or not, ...)
 - Music type (rock, pop, folk, ...)
 - Language
-- Album name (and release date, type, ...)
-- Singer(s) name (and potentially some more info such as birthdate, usual music type, nationality, ...), identifying the "primary" singer if possible
 
 ## Feasibility and Risks
 
@@ -38,6 +39,8 @@ Time permitting, we will look into other radios, most likely by using HTML scrap
 We will deliver data visualizations answering interesting, fun and random questions.
 
 The challenge for visualizations is to make a human-friendly view of many variables: song type, popularity, language, release date, time at which they are played, ...
+
+We can have a sort of sliding view overtime of the popularity of a song or an artist. Or the evolution of the most played song on each or every station.
 
 ## Timeplan
 
