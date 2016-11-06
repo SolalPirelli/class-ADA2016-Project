@@ -1,6 +1,3 @@
-# ADA2016 Project
-Project for Dr. Catasta's Applied Data Analysis class, Fall 2016.
-
 ## Abstract
 
 We will investigate playlists from various radios over the last few years.
