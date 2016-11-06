@@ -14,8 +14,8 @@ We will then create visualizations for various questions one can ask about music
 - Looking at playlists over time, did some characteristics change? For instance, can we spot trends in music styles?
 - Some radios claim to play "nostalgic" music; what do they mean by that? Do they play from a moving window over the past, or is it always the same "old" songs?
 - Can we find interesting trends by correlating this information with other websites, such as how many songs, albums or singers have an entry on Wikipedia?
-- Some radio have emission where they claim to be avant-garde, but do we see these songs in the main playlist a few month after?
-- Also, in specific emission, is the evolution similar to the main playlist or is it slower/faster?
+- Some radio have program where they claim to be avant-garde, but do we see these songs in the main playlist a few month after?
+- Also, in specific program, is the evolution similar to the main playlist or is it slower/faster?
 
 ## Data description
 
