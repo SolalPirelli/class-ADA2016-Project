@@ -3,33 +3,13 @@
 from bs4 import BeautifulSoup
 import datetime
 import re
-import requests
 import sys
+
+from lib import *
 
 NAME, = sys.argv[1:]
 BASE_URL = 'https://www.rts.ch/{}'.format(NAME)
 bs = lambda t: BeautifulSoup(t, 'lxml')
-
-class Title:
-    def __init__(self, title, artist, date):
-        self.title = title
-        self.artist = artist
-        self.date = date
-
-class EmissionTitle:
-    def __init__(self, title, album, artist, chapter):
-        self.title = title
-        self.artist = artist
-        self.date = date
-
-def dates_from_today():
-    old = datetime.date.today()
-    yield old
-
-    while True:
-        new = old - datetime.timedelta(days=1)
-        yield new
-        old = new
 
 def get_titles_basic(dates):
 
@@ -41,8 +21,7 @@ def get_titles_basic(dates):
 
     for d in dates:
         url = '{}/quel-titre/?d={}'.format(BASE_URL, d.strftime('%d/%m/%Y'))
-        req = requests.get(url)
-        assert req.status_code == 200
+        req = get(url)
 
         soup = bs(req.text)
         for item in soup.find_all('table', id='tableSelection_content')[1:]:
@@ -62,8 +41,7 @@ def get_titles_couleur3(dates):
     next(dates)
     for d in dates:
         url = '{}/quel-titre/?date={}'.format(BASE_URL, d.strftime('%d-%m-%Y'))
-        req = requests.get(url)
-        assert req.status_code == 200
+        req = get(url)
 
         soup = bs(req.text)
         for item in soup.find_all('div', class_='item'):
@@ -74,8 +52,7 @@ def get_titles_couleur3(dates):
 
 def get_index_of_today(emission):
     url = '{}/programmes/{}'.format(BASE_URL, emission)
-    req = requests.get(url)
-    assert req.status_code == 200
+    req = get(url)
 
     soup = bs(req.text)
     calendar = soup.find(id='detailed-calendar')
@@ -93,8 +70,7 @@ def get_dates_in_calendar(date, soup):
 
 def playlist_of_emission_index(emission, index):
     url = '{}/programmes/{}/{}.html'.format(BASE_URL, emission, index)
-    req = requests.get(url)
-    assert req.status_code == 200
+    req = get(url)
 
     soup = bs(req.text)
     program = soup.find(class_='musical-program')
@@ -111,8 +87,7 @@ def dates_to_index_of_emission(emission):
     url = '{}/programmes/{}/?format=radio/couleur3/get-calendar&type=bcst&idbcst={}'.format(
         BASE_URL, emission, index # TODO couleur3 is hardcoded, issue?
     )
-    req = requests.get(url)
-    assert req.status_code == 200
+    req = get(url)
 
     yield from get_dates_in_calendar(datetime.date.today(), bs(req.text))
 
@@ -120,8 +95,7 @@ def dates_to_index_of_emission(emission):
 def get_titles_for_emission(dates, emission):
     for d in dates:
         url = '{}/programmes/'.format(BASE_URL, emission)
-        req = requests.get(url)
-        assert req.status_code == 200
+        req = get(url)
 
 get_titles_map = {
     'la-1ere': get_titles_basic,
@@ -131,8 +105,7 @@ get_titles_map = {
 }
 get_titles = get_titles_map[NAME]
 
-for t in get_titles(dates_from_today()):
-    print(t.date, t.title, t.artist)
+print_titles(get_titles(dates_from_today()))
 
 #print(list(dates_of_emission('electro-libre')))
 
