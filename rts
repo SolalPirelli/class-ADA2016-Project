@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-from bs4 import BeautifulSoup
 import datetime
 import re
 import sys
@@ -9,7 +8,6 @@ from lib import *
 
 NAME, = sys.argv[1:]
 BASE_URL = 'https://www.rts.ch/{}'.format(NAME)
-bs = lambda t: BeautifulSoup(t, 'lxml')
 
 def get_titles_basic(dates):
 
@@ -20,8 +18,13 @@ def get_titles_basic(dates):
         )
 
     for d in dates:
-        url = '{}/quel-titre/?d={}'.format(BASE_URL, d.strftime('%d/%m/%Y'))
-        req = get(url)
+        url = BASE_URL + '/quel-titre/'
+        params = {
+            'd': d.strftime('%d/%m/%Y'),
+            'dh': '00',
+            'dm': '00',
+        }
+        req = get(url, params=params)
 
         soup = bs(req.text)
         for item in soup.find_all('table', id='tableSelection_content')[1:]:
@@ -38,7 +41,6 @@ def get_titles_couleur3(dates):
             datetime.datetime.strptime(node.text, '%H:%M').time(),
         )
 
-    next(dates)
     for d in dates:
         url = '{}/quel-titre/?date={}'.format(BASE_URL, d.strftime('%d-%m-%Y'))
         req = get(url)
@@ -105,7 +107,7 @@ get_titles_map = {
 }
 get_titles = get_titles_map[NAME]
 
-print_titles(get_titles(dates_from_today()))
+dump_titles(get_titles(dates_from_today()))
 
 #print(list(dates_of_emission('electro-libre')))
 
