@@ -84,7 +84,7 @@ def get_elems(track, artist):
     json = req.json()
 
     if check_error(json):
-        return date, track, artist, ''
+        return date, track, artist, TAG_SEP.join(tags_for_artist(artist))
 
     json_attr = json['toptags']['@attr']
     artist = json_attr['artist']
@@ -92,6 +92,7 @@ def get_elems(track, artist):
     tags = extract_tags(req.json())
 
     if len(tags) == 0:
+        print(track, "has no tags, search by artist!")
         tags = tags_for_artist(artist)
 
     return date, track, artist, TAG_SEP.join(tags)
@@ -108,23 +109,24 @@ if __name__ == '__main__':
             writer = csv.writer(out, delimiter=CSV_SEP)
             i = 1
 
-            for date, track, artist in reader:
-                try:
-                    artist = cleaner(artist)
-                    track = cleaner(track)
+            for line in reader:
+                if len(line) < 3:
+                    print(line, "is invalid")
+                    continue
 
-                    line = get_elems(track, artist)
+                date = line[0]
+                artist = cleaner(line[2])
+                track = cleaner(line[1])
 
-                    if line is None:
-                        print(track, "-", artist, "not found!")
-                        continue
+                line = get_elems(track, artist)
 
-                    writer.writerow(line)
+                if line is None:
+                    print(track, "-", artist, "not found!")
+                    continue
 
-                    if i % 2000 == 0:
-                        print("Processed %d" % (i))
+                writer.writerow(line)
 
-                    i = i + 1
-                except:
-                    print(track, "-", artist, "encountered an error",
-                          sys.exc_info()[0])
+                if i % 2000 == 0:
+                    print("Processed %d" % (i))
+
+                i = i + 1
