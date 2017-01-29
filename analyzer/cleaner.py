@@ -6,21 +6,24 @@ import sys
 
 
 def count_tags(df):
-    tags = df['tags'].apply(pd.Series)
-    tags = tags.rename(columns=lambda x: 'tag_' + str(x))
+    tags = df['tags']
     tags = pd.concat([tags[col] for col in tags])
     tags = pd.DataFrame({'tag': tags, 'count': np.ones(len(tags))})
     return tags.groupby('tag').sum().sort_values('count', ascending=False)
 
 
-def remove_no_tags(df):
-    return df[(df['tags'].len() == 0)]
+def empty_tag(t):
+    if len(t) > 0:
+        return t
+    else:
+        return "unknown"
 
 
 def clean_df(df):
     df['tags'].fillna("", inplace=True)
     df['date'] = pd.to_datetime(df['date'])
     df['tags'] = df['tags'].apply(lambda x: str(x).lower().split('\x1E'))
+    df['tags'] = df['tags'].apply(empty_tag)
 
 
 def load_playlist(fname):
@@ -38,4 +41,5 @@ if __name__ == '__main__':
     df = load_playlist(sys.argv[1])
     clean_df(df)
     tag_pop = count_tags(df)
+    print("Done! Writing csv to", sys.argv[2])
     tag_pop.to_csv(sys.argv[2], sep='\x1F')
